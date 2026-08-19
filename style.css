@@ -1,1185 +1,1488 @@
 /* ==================================================
-   HTML Builder
-   Canva風デザイン
+   CodeMirror 初期化
 ================================================== */
 
-* {
-  box-sizing: border-box;
+let editor = CodeMirror.fromTextArea(
+  document.getElementById("editorText"),
+  {
+    mode: "xml",
+    lineNumbers: true,
+    lineWrapping: true,
+    theme: "default",
+    indentUnit: 2,
+    tabSize: 2,
+    autoCloseTags: true
+  }
+);
+
+
+/* ==================================================
+   要素取得
+================================================== */
+
+const pcPreview =
+  document.getElementById("pcPreview");
+
+const mobilePreview =
+  document.getElementById("mobilePreview");
+
+const previewContent =
+  document.querySelector(".preview-content");
+
+const pcStage =
+  document.querySelector(".pc-stage");
+
+const mobileStage =
+  document.querySelector(".mobile-stage");
+
+const pcPreviewElement =
+  document.querySelector(".pc-preview");
+
+const mobilePreviewElement =
+  document.querySelector(".mobile-preview");
+
+const pcDevice =
+  document.querySelector(".pc-device");
+
+const mobileDevice =
+  document.querySelector(".mobile-device");
+
+const editorPage =
+  document.getElementById("editorPage");
+
+const mainArea =
+  document.querySelector(".main-area");
+
+const previewPcBtn =
+  document.getElementById("previewPcBtn");
+
+const previewMobileBtn =
+  document.getElementById("previewMobileBtn");
+
+const sideMenus =
+  document.querySelectorAll(".side-menu");
+
+const panelTitle =
+  document.getElementById("panelTitle");
+
+const panelContent =
+  document.getElementById("panelContent");
+
+
+/* ==================================================
+   プレビュー更新
+================================================== */
+
+function updatePreview() {
+
+  const html =
+    editor.getValue();
+
+  pcPreview.innerHTML =
+    html;
+
+  mobilePreview.innerHTML =
+    html;
+
+  updatePreviewScale();
 }
 
-html,
-body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-}
 
-body {
-  font-family:
-    "Noto Sans JP",
-    "Hiragino Sans",
-    Arial,
-    sans-serif;
+editor.on(
+  "change",
+  function () {
 
-  background:
-    linear-gradient(
-      135deg,
-      #fff8fa 0%,
-      #fff4f7 45%,
-      #fdf8fb 100%
+    updatePreview();
+
+  }
+);
+
+
+/* ==================================================
+   プレビュー縮尺
+================================================== */
+
+function updatePreviewScale() {
+
+  if (!previewContent) return;
+
+  const availableWidth =
+    Math.max(
+      previewContent.clientWidth - 40,
+      100
     );
 
-  color: #4b3b42;
+  const pcScale =
+    Math.min(
+      availableWidth / 1280,
+      1
+    );
+
+  const mobileScale =
+    Math.min(
+      availableWidth / 375,
+      1
+    );
+
+
+  if (pcPreviewElement) {
+
+    pcPreviewElement.style.transform =
+      `scale(${pcScale})`;
+
+  }
+
+
+  if (pcDevice) {
+
+    pcDevice.style.width =
+      `${1280 * pcScale}px`;
+
+  }
+
+
+  if (pcStage) {
+
+    pcStage.style.minHeight =
+      `${748 * pcScale + 20}px`;
+
+  }
+
+
+  if (mobilePreviewElement) {
+
+    mobilePreviewElement.style.transform =
+      `scale(${mobileScale})`;
+
+  }
+
+
+  if (mobileDevice) {
+
+    mobileDevice.style.width =
+      `${375 * mobileScale}px`;
+
+    mobileDevice.style.height =
+      `${812 * mobileScale + 10}px`;
+
+  }
+
+
+  if (mobileStage) {
+
+    mobileStage.style.minHeight =
+      `${832 * mobileScale}px`;
+
+  }
+
 }
 
 
 /* ==================================================
-   全体
+   PC / スマホ切り替え
 ================================================== */
 
-#editorPage {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
+function switchMode(mode) {
+
+  if (mode === "pc") {
+
+    editorPage.classList.remove(
+      "mobile-mode"
+    );
+
+    pcStage.style.display =
+      "flex";
+
+    mobileStage.style.display =
+      "none";
+
+    previewPcBtn.classList.add(
+      "active"
+    );
+
+    previewMobileBtn.classList.remove(
+      "active"
+    );
+
+  } else {
+
+    editorPage.classList.add(
+      "mobile-mode"
+    );
+
+    pcStage.style.display =
+      "none";
+
+    mobileStage.style.display =
+      "flex";
+
+    previewPcBtn.classList.remove(
+      "active"
+    );
+
+    previewMobileBtn.classList.add(
+      "active"
+    );
+
+  }
+
+  updatePreviewScale();
+
 }
+
+
+previewPcBtn.addEventListener(
+  "click",
+  function () {
+
+    switchMode("pc");
+
+  }
+);
+
+
+previewMobileBtn.addEventListener(
+  "click",
+  function () {
+
+    switchMode("mobile");
+
+  }
+);
+
+
+/* ==================================================
+   HTMLコピー
+================================================== */
+
+document
+  .querySelector(".copy")
+  .addEventListener(
+    "click",
+    async function () {
+
+      try {
+
+        await navigator.clipboard.writeText(
+          editor.getValue()
+        );
+
+        alert(
+          "HTMLをコピーしました！"
+        );
+
+      } catch (error) {
+
+        alert(
+          "HTMLのコピーに失敗しました。"
+        );
+
+      }
+
+    }
+  );
 
 
 /* ==================================================
    サイドバー
 ================================================== */
 
-.sidebar {
-  width: 210px;
-  min-width: 210px;
+sideMenus.forEach(
+  function (menu) {
 
-  display: flex;
-  flex-direction: column;
+    menu.addEventListener(
+      "click",
+      function () {
 
-  padding: 22px 14px;
+        sideMenus.forEach(
+          function (item) {
 
-  background:
-    linear-gradient(
-      180deg,
-      #fff7f9 0%,
-      #ffe9ef 100%
+            item.classList.remove(
+              "active"
+            );
+
+          }
+        );
+
+        menu.classList.add(
+          "active"
+        );
+
+        const tab =
+          menu
+            .querySelector("span:last-child")
+            .innerText
+            .trim();
+
+        loadPanel(tab);
+
+      }
     );
 
-  border-right: 1px solid #f5d6df;
+  }
+);
 
-  box-shadow:
-    4px 0 18px rgba(217, 132, 155, 0.08);
 
-  z-index: 10;
+/* ==================================================
+   デザインテンプレート
+================================================== */
+
+const templates = {
+
+  vertical3: `
+<section class="template three-split">
+
+  <h2>デザインが重要な3つの理由</h2>
+
+  <div class="split-item">
+
+    <div class="split-image"></div>
+
+    <h3>01｜わかりやすさ</h3>
+
+    <p>説明文が入ります。</p>
+
+  </div>
+
+  <div class="split-item">
+
+    <div class="split-image"></div>
+
+    <h3>02｜見やすさ</h3>
+
+    <p>説明文が入ります。</p>
+
+  </div>
+
+  <div class="split-item">
+
+    <div class="split-image"></div>
+
+    <h3>03｜ブランディング</h3>
+
+    <p>説明文が入ります。</p>
+
+  </div>
+
+</section>`,
+
+  horizontal3: `
+<section class="template horizontal-cards">
+
+  <div class="card">
+
+    <div class="split-image"></div>
+
+    <h3>タイトル</h3>
+
+    <p>説明文が入ります。</p>
+
+  </div>
+
+  <div class="card">
+
+    <div class="split-image"></div>
+
+    <h3>タイトル</h3>
+
+    <p>説明文が入ります。</p>
+
+  </div>
+
+  <div class="card">
+
+    <div class="split-image"></div>
+
+    <h3>タイトル</h3>
+
+    <p>説明文が入ります。</p>
+
+  </div>
+
+</section>`,
+
+  imageText: `
+<section class="template image-text">
+
+  <img
+    src="https://via.placeholder.com/400x250"
+    alt="image"
+  >
+
+  <div class="text">
+
+    <h2>セクションタイトル</h2>
+
+    <p>
+      説明文が入ります。
+      説明文が入ります。
+    </p>
+
+  </div>
+
+</section>`,
+
+  cardList: `
+<section class="template card-list">
+
+  <div class="card-item">
+
+    <img
+      src="https://via.placeholder.com/80"
+      alt="image"
+    >
+
+    <div>
+
+      <h3>タイトル</h3>
+
+      <p>説明文が入ります。</p>
+
+    </div>
+
+  </div>
+
+  <div class="card-item">
+
+    <img
+      src="https://via.placeholder.com/80"
+      alt="image"
+    >
+
+    <div>
+
+      <h3>タイトル</h3>
+
+      <p>説明文が入ります。</p>
+
+    </div>
+
+  </div>
+
+</section>`
+
+};
+
+
+/* ==================================================
+   色設定
+================================================== */
+
+let selectedColor =
+  "#e86f9b";
+
+let selectedColorType =
+  "text";
+
+
+/* ==================================================
+   選択範囲を保存
+================================================== */
+
+let savedSelection = null;
+
+
+function saveSelection() {
+
+  const doc =
+    editor.getDoc();
+
+  const selection =
+    doc.listSelections()[0];
+
+  savedSelection = {
+
+    anchor: {
+      line: selection.anchor.line,
+      ch: selection.anchor.ch
+    },
+
+    head: {
+      line: selection.head.line,
+      ch: selection.head.ch
+    }
+
+  };
+
 }
 
 
-/* ロゴ */
+function restoreSelection() {
 
-.logo-area {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  if (!savedSelection) return;
 
-  padding: 6px 8px 24px;
+  const doc =
+    editor.getDoc();
+
+  doc.setSelection(
+    savedSelection.anchor,
+    savedSelection.head
+  );
+
 }
 
-.logo-mark {
-  width: 38px;
-  height: 38px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ==================================================
+   カラー入力
+================================================== */
 
-  border-radius: 12px;
+function createColorTool(
+  type
+) {
 
-  background:
-    linear-gradient(
-      135deg,
-      #f59ab2,
-      #e9819f
+  const wrapper =
+    document.createElement(
+      "div"
     );
 
-  color: #fff;
-
-  font-size: 20px;
-
-  box-shadow:
-    0 5px 12px rgba(225, 119, 147, 0.25);
-}
-
-.logo-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.logo-text strong {
-  font-size: 14px;
-  color: #654b55;
-}
-
-.logo-text span {
-  font-size: 9px;
-  color: #b58d99;
-  letter-spacing: 0.4px;
-}
+  wrapper.className =
+    "color-tool";
 
 
-/* メニューラベル */
-
-.menu-label {
-  padding: 0 9px 8px;
-
-  color: #c28c9b;
-
-  font-size: 10px;
-  font-weight: 700;
-
-  letter-spacing: 1.2px;
-}
-
-
-/* サイドメニュー */
-
-.side-menu {
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  margin-bottom: 6px;
-  padding: 11px 10px;
-
-  border: 0;
-  border-radius: 12px;
-
-  background: transparent;
-
-  color: #735c65;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.side-menu:hover {
-  background: rgba(255, 255, 255, 0.7);
-  transform: translateX(2px);
-}
-
-.side-menu.active {
-  background: #fff;
-
-  color: #df7797;
-
-  box-shadow:
-    0 4px 12px rgba(217, 132, 155, 0.12);
-}
-
-.menu-icon {
-  width: 30px;
-  height: 30px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 9px;
-
-  background: #ffe1e8;
-
-  color: #df819b;
-
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.side-menu.active .menu-icon {
-  background:
-    linear-gradient(
-      135deg,
-      #f59ab2,
-      #e985a2
+  const title =
+    document.createElement(
+      "div"
     );
 
-  color: #fff;
+  title.className =
+    "color-tool-title";
 
-  box-shadow:
-    0 4px 9px rgba(225, 119, 147, 0.22);
-}
-
-
-/* 下部 */
-
-.sidebar-bottom {
-  margin-top: auto;
-  padding-top: 18px;
-}
-
-.tip-card {
-  display: flex;
-  gap: 8px;
-
-  padding: 12px;
-
-  background: rgba(255, 255, 255, 0.65);
-
-  border: 1px solid #f6d7df;
-
-  border-radius: 14px;
-}
-
-.tip-icon {
-  font-size: 18px;
-}
-
-.tip-card strong {
-  display: block;
-
-  margin-bottom: 3px;
-
-  color: #c86f89;
-
-  font-size: 11px;
-}
-
-.tip-card p {
-  margin: 0;
-
-  color: #a88b94;
-
-  font-size: 9px;
-  line-height: 1.6;
-}
+  title.textContent =
+    type === "text"
+      ? "🔤 文字色"
+      : "🖍️ 背景色";
 
 
-/* ==================================================
-   メインエリア
-================================================== */
-
-.main-area {
-  flex: 1;
-
-  display: grid;
-
-  grid-template-columns:
-    245px
-    8px
-    minmax(300px, 1fr)
-    8px
-    minmax(360px, 1.15fr);
-
-  gap: 0;
-
-  padding: 14px;
-
-  min-width: 0;
-}
-
-
-/* ==================================================
-   ドラッグバー
-================================================== */
-
-.resize-divider {
-  position: relative;
-
-  width: 8px;
-  min-width: 8px;
-
-  cursor: col-resize;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 20;
-}
-
-.resize-divider::before {
-  content: "";
-
-  position: absolute;
-
-  width: 3px;
-  height: 42px;
-
-  border-radius: 10px;
-
-  background: #efcbd5;
-
-  transition:
-    background 0.2s ease,
-    height 0.2s ease;
-}
-
-.resize-divider span {
-  position: relative;
-
-  width: 5px;
-  height: 28px;
-
-  border-radius: 10px;
-
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      #dba7b6 0,
-      #dba7b6 2px,
-      transparent 2px,
-      transparent 5px
+  const description =
+    document.createElement(
+      "p"
     );
 
-  opacity: 0;
+  description.className =
+    "color-tool-description";
 
-  transition: opacity 0.2s ease;
-}
+  description.textContent =
+    "文字を選択してから色を選んでください";
 
-.resize-divider:hover::before {
-  background: #e889a4;
-  height: 55px;
-}
 
-.resize-divider:hover span {
-  opacity: 1;
-}
-
-body.is-resizing {
-  cursor: col-resize !important;
-  user-select: none;
-}
-
-body.is-resizing * {
-  cursor: col-resize !important;
-}
-
-
-/* ==================================================
-   共通カード
-================================================== */
-
-.panel,
-.editor,
-.preview-content {
-  min-width: 0;
-
-  background: rgba(255, 255, 255, 0.94);
-
-  border: 1px solid #f4dce3;
-
-  border-radius: 18px;
-
-  box-shadow:
-    0 8px 28px rgba(205, 126, 149, 0.08);
-}
-
-
-/* ==================================================
-   パネル
-================================================== */
-
-.panel {
-  padding: 18px;
-  overflow-y: auto;
-}
-
-.panel-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-
-  padding-bottom: 8px;
-}
-
-.panel-kicker,
-.section-kicker {
-  display: block;
-
-  margin-bottom: 3px;
-
-  color: #d89bad;
-
-  font-size: 9px;
-  font-weight: 700;
-
-  letter-spacing: 1.3px;
-}
-
-#panelTitle {
-  margin: 0;
-
-  color: #5c4650;
-
-  font-size: 19px;
-  font-weight: 700;
-}
-
-.panel-decoration {
-  width: 32px;
-  height: 32px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #fff0f4;
-
-  color: #e68aa3;
-
-  font-size: 15px;
-}
-
-.panel-description {
-  margin: 3px 0 17px;
-
-  color: #ad929b;
-
-  font-size: 10px;
-}
-
-
-/* ==================================================
-   パネルボタン
-================================================== */
-
-#panelContent {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-#panelContent button {
-  position: relative;
-
-  width: 100%;
-
-  padding: 12px 13px;
-
-  border: 1px solid #f4dce3;
-  border-radius: 11px;
-
-  background: #fffafa;
-
-  color: #6d555e;
-
-  font-family: inherit;
-
-  font-size: 12px;
-  font-weight: 500;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.18s ease,
-    background 0.18s ease,
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
-}
-
-#panelContent button::after {
-  content: "＋";
-
-  position: absolute;
-  right: 12px;
-
-  color: #dda0af;
-
-  font-size: 13px;
-}
-
-#panelContent button:hover {
-  transform: translateY(-2px);
-
-  background: #fff0f4;
-
-  border-color: #efc4d0;
-
-  box-shadow:
-    0 5px 12px rgba(218, 132, 154, 0.12);
-}
-
-
-/* ==================================================
-   カラーチャート
-================================================== */
-
-.color-tool {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  padding: 12px;
-
-  border: 1px solid #f3dce3;
-  border-radius: 13px;
-
-  background: #fff8fa;
-}
-
-.color-tool-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  color: #795e68;
-
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.color-tool-description {
-  margin: 0;
-
-  color: #b2939d;
-
-  font-size: 9px;
-  line-height: 1.5;
-}
-
-.color-picker-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.color-picker {
-  width: 48px;
-  height: 34px;
-
-  padding: 3px;
-
-  border: 1px solid #efd5dd;
-  border-radius: 9px;
-
-  background: #fff;
-
-  cursor: pointer;
-}
-
-.color-value {
-  flex: 1;
-
-  padding: 7px 8px;
-
-  border: 1px solid #efdce2;
-  border-radius: 8px;
-
-  background: #fff;
-
-  color: #9c7f89;
-
-  font-family: monospace;
-  font-size: 10px;
-
-  text-align: center;
-}
-
-.apply-color {
-  width: 100% !important;
-
-  margin: 0 !important;
-  padding: 9px 10px !important;
-
-  text-align: center !important;
-
-  background:
-    linear-gradient(
-      135deg,
-      #f39ab1,
-      #e9819e
-    ) !important;
-
-  color: #fff !important;
-
-  border: 0 !important;
-}
-
-.apply-color::after {
-  display: none !important;
-}
-
-
-/* ==================================================
-   エディタ
-================================================== */
-
-.editor {
-  display: flex;
-  flex-direction: column;
-
-  padding: 18px;
-
-  overflow: hidden;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 12px;
-}
-
-.section-header h3,
-.preview-header h3 {
-  margin: 0;
-
-  color: #5c4650;
-
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.status-dot {
-  padding: 5px 9px;
-
-  border-radius: 20px;
-
-  background: #fff1f4;
-
-  color: #d8889e;
-
-  font-size: 9px;
-}
-
-.editor-wrapper {
-  flex: 1;
-
-  min-height: 0;
-
-  overflow: hidden;
-
-  border: 1px solid #efdce2;
-
-  border-radius: 12px;
-
-  background: #fffdfd;
-}
-
-
-/* CodeMirror */
-
-.CodeMirror {
-  height: 100%;
-
-  font-family:
-    "Consolas",
-    "Monaco",
-    monospace;
-
-  font-size: 12px;
-
-  color: #66525a;
-
-  background: #fffdfd;
-}
-
-.CodeMirror-gutters {
-  background: #fff6f8;
-
-  border-right: 1px solid #f1dde3;
-}
-
-.CodeMirror-linenumber {
-  color: #c9a8b2;
-}
-
-.CodeMirror-cursor {
-  border-left: 2px solid #e88da6;
-}
-
-.CodeMirror-selected {
-  background: #ffe4eb !important;
-}
-
-
-/* コピー */
-
-.copy {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-
-  margin-top: 10px;
-
-  padding: 11px;
-
-  border: 0;
-  border-radius: 11px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #f39ab1,
-      #e9819e
+  const row =
+    document.createElement(
+      "div"
     );
 
-  color: #fff;
+  row.className =
+    "color-picker-row";
 
-  font-family: inherit;
 
-  font-size: 11px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 5px 12px rgba(225, 119, 147, 0.18);
-}
-
-.copy:hover {
-  transform: translateY(-2px);
-}
-
-
-/* ==================================================
-   プレビュー
-================================================== */
-
-.preview-content {
-  display: flex;
-  flex-direction: column;
-
-  min-width: 0;
-  min-height: 0;
-
-  padding: 18px;
-
-  overflow: hidden;
-}
-
-.preview-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  flex-shrink: 0;
-
-  margin-bottom: 14px;
-}
-
-.preview-switch {
-  display: flex;
-  gap: 4px;
-
-  padding: 4px;
-
-  border-radius: 10px;
-
-  background: #fff2f5;
-}
-
-.preview-mode-btn {
-  padding: 6px 9px;
-
-  border: 0;
-  border-radius: 7px;
-
-  background: transparent;
-
-  color: #a98791;
-
-  font-family: inherit;
-
-  font-size: 9px;
-
-  cursor: pointer;
-}
-
-.preview-mode-btn.active {
-  background: #fff;
-
-  color: #d97993;
-
-  box-shadow:
-    0 2px 7px rgba(214, 130, 151, 0.12);
-}
-
-
-/* ==================================================
-   デバイス
-================================================== */
-
-.pc-stage,
-.mobile-stage {
-  flex: 1;
-
-  min-height: 0;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  overflow: auto;
-
-  padding: 8px 5px 20px;
-}
-
-.mobile-stage {
-  display: none;
-}
-
-.device-label {
-  width: 100%;
-
-  display: flex;
-  justify-content: space-between;
-
-  margin-bottom: 7px;
-
-  color: #b89da6;
-
-  font-size: 8px;
-  font-weight: 600;
-
-  letter-spacing: 0.8px;
-}
-
-
-/* PC */
-
-.pc-device {
-  flex-shrink: 0;
-
-  overflow: hidden;
-
-  background: #fff;
-
-  border: 1px solid #e5dce0;
-
-  border-radius: 12px;
-
-  box-shadow:
-    0 8px 25px rgba(75, 52, 61, 0.12);
-}
-
-.browser-bar {
-  height: 28px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 0 10px;
-
-  background: #fff7f9;
-
-  border-bottom: 1px solid #f0e3e7;
-}
-
-.browser-dots {
-  display: flex;
-  gap: 4px;
-}
-
-.browser-dots span {
-  width: 6px;
-  height: 6px;
-
-  border-radius: 50%;
-
-  background: #e7c2cc;
-}
-
-.browser-address {
-  flex: 1;
-
-  height: 16px;
-
-  display: flex;
-  align-items: center;
-
-  padding-left: 8px;
-
-  border-radius: 5px;
-
-  background: #fff;
-
-  color: #c3aab2;
-
-  font-size: 7px;
-}
-
-.pc-preview {
-  width: 1280px;
-  min-height: 720px;
-
-  background: #fff;
-
-  padding: 20px;
-
-  transform-origin: top left;
-}
-
-
-/* スマホ */
-
-.mobile-device {
-  position: relative;
-
-  flex-shrink: 0;
-
-  width: 375px;
-  min-height: 812px;
-
-  overflow: hidden;
-
-  padding: 8px;
-
-  border: 5px solid #30292d;
-  border-radius: 34px;
-
-  background: #30292d;
-}
-
-.mobile-camera {
-  position: absolute;
-
-  top: 9px;
-  left: 50%;
-
-  width: 70px;
-  height: 16px;
-
-  transform: translateX(-50%);
-
-  border-radius: 20px;
-
-  background: #211d20;
-
-  z-index: 5;
-}
-
-.mobile-preview {
-  width: 375px;
-  min-height: 812px;
-
-  overflow: hidden;
-
-  background: #fff;
-
-  border-radius: 24px;
-
-  padding: 20px;
-
-  transform-origin: top left;
-}
-
-
-/* ==================================================
-   テンプレート
-================================================== */
-
-section.template {
-  margin: 30px 0;
-
-  padding: 24px;
-
-  background: #fff;
-
-  border: 1px solid #f2dce2;
-
-  border-radius: 16px;
-}
-
-.three-split h2 {
-  margin-bottom: 22px;
-  color: #dc7d97;
-}
-
-.split-item {
-  margin-bottom: 20px;
-}
-
-.split-image {
-  width: 100%;
-  height: 120px;
-
-  margin-bottom: 10px;
-
-  border-radius: 11px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ffe8ee,
-      #fff3f6
+  const picker =
+    document.createElement(
+      "input"
     );
-}
 
-.horizontal-cards {
-  display: flex;
-  gap: 16px;
-}
+  picker.type =
+    "color";
 
-.horizontal-cards .card {
-  flex: 1;
+  picker.className =
+    "color-picker";
 
-  padding: 12px;
+  picker.value =
+    selectedColor;
 
-  background: #fff5f7;
 
-  border: 1px solid #f5e1e6;
+  const value =
+    document.createElement(
+      "div"
+    );
 
-  border-radius: 12px;
-}
+  value.className =
+    "color-value";
 
-.image-text {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
+  value.textContent =
+    picker.value;
 
-.image-text img {
-  width: 40%;
-  border-radius: 11px;
-}
 
-.image-text .text {
-  flex: 1;
-}
+  const apply =
+    document.createElement(
+      "button"
+    );
 
-.card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+  apply.type =
+    "button";
 
-.card-list .card-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  apply.className =
+    "apply-color";
 
-  padding: 12px;
+  apply.textContent =
+    "この色を適用";
 
-  background: #fff5f7;
 
-  border: 1px solid #f5e1e6;
+  picker.addEventListener(
+    "focus",
+    function () {
 
-  border-radius: 12px;
-}
+      saveSelection();
 
-.card-list .card-item img {
-  width: 80px;
-  height: 80px;
+    }
+  );
 
-  border-radius: 10px;
 
-  background: #ffe7ed;
+  picker.addEventListener(
+    "click",
+    function () {
+
+      saveSelection();
+
+    }
+  );
+
+
+  picker.addEventListener(
+    "input",
+    function () {
+
+      selectedColor =
+        picker.value;
+
+      value.textContent =
+        picker.value;
+
+    }
+  );
+
+
+  apply.addEventListener(
+    "click",
+    function () {
+
+      saveSelection();
+
+      selectedColor =
+        picker.value;
+
+      selectedColorType =
+        type;
+
+      applyColor(
+        type,
+        selectedColor
+      );
+
+    }
+  );
+
+
+  row.appendChild(
+    picker
+  );
+
+  row.appendChild(
+    value
+  );
+
+
+  wrapper.appendChild(
+    title
+  );
+
+  wrapper.appendChild(
+    description
+  );
+
+  wrapper.appendChild(
+    row
+  );
+
+  wrapper.appendChild(
+    apply
+  );
+
+
+  return wrapper;
+
 }
 
 
 /* ==================================================
-   スクロールバー
+   色を適用
 ================================================== */
 
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
+function applyColor(
+  type,
+  color
+) {
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+  restoreSelection();
 
-::-webkit-scrollbar-thumb {
-  background: #e6c2cc;
-  border-radius: 20px;
+
+  const doc =
+    editor.getDoc();
+
+  const selection =
+    doc.getSelection();
+
+
+  if (!selection) {
+
+    alert(
+      "色を付けたい文字を選択してください。"
+    );
+
+    editor.focus();
+
+    return;
+
+  }
+
+
+  let before = "";
+  let after = "";
+
+
+  if (type === "text") {
+
+    before =
+      `<span style="color:${color}">`;
+
+    after =
+      "</span>";
+
+  } else {
+
+    before =
+      `<span style="background-color:${color}">`;
+
+    after =
+      "</span>";
+
+  }
+
+
+  doc.replaceSelection(
+    before +
+    selection +
+    after
+  );
+
+
+  editor.focus();
+
 }
 
 
 /* ==================================================
-   スマホモード
+   パネル内容
 ================================================== */
 
-#editorPage.mobile-mode .pc-stage {
-  display: none;
-}
+function loadPanel(tab) {
 
-#editorPage.mobile-mode .mobile-stage {
-  display: flex;
+  panelTitle.innerText =
+    tab;
+
+  panelContent.innerHTML =
+    "";
+
+
+  const buttons = [];
+
+
+  /* ==================================================
+     テキスト
+  ================================================== */
+
+  if (tab === "テキスト") {
+
+    buttons.push({
+      label: "見出し",
+      html: "<h1>見出し</h1>"
+    });
+
+    buttons.push({
+      label: "小見出し",
+      html: "<h2>小見出し</h2>"
+    });
+
+    buttons.push({
+      label: "本文",
+      html: "<p>本文テキスト</p>"
+    });
+
+    buttons.push({
+      label: "太字",
+      wrap: [
+        "<strong>",
+        "</strong>"
+      ]
+    });
+
+    buttons.push({
+      label: "下線",
+      wrap: [
+        "<u>",
+        "</u>"
+      ]
+    });
+
+    buttons.push({
+      label: "リンク",
+      link: true
+    });
+
+    buttons.push({
+      label: "引用",
+      wrap: [
+        "<blockquote>",
+        "</blockquote>"
+      ]
+    });
+
+    buttons.push({
+      label: "罫線",
+      html: "<hr>"
+    });
+
+  }
+
+
+  /* ==================================================
+     レイアウト
+  ================================================== */
+
+  if (tab === "レイアウト") {
+
+    buttons.push({
+      label: "2カラム",
+
+      html: `
+<div class="two-column">
+
+  <div>左</div>
+
+  <div>右</div>
+
+</div>`
+    });
+
+
+    buttons.push({
+      label: "3カラム",
+
+      html: `
+<div class="three-column">
+
+  <div>1</div>
+
+  <div>2</div>
+
+  <div>3</div>
+
+</div>`
+    });
+
+  }
+
+
+  /* ==================================================
+     ボックス
+  ================================================== */
+
+  if (tab === "ボックス") {
+
+    buttons.push({
+      label: "メモ",
+
+      html:
+        `<div class="memo-box">メモ</div>`
+    });
+
+
+    buttons.push({
+      label: "注意",
+
+      html:
+        `<div class="alert-box">注意</div>`
+    });
+
+
+    buttons.push({
+      label: "ポイント",
+
+      html:
+        `<div class="point-box">ポイント</div>`
+    });
+
+  }
+
+
+  /* ==================================================
+     画像
+  ================================================== */
+
+  if (tab === "画像") {
+
+    buttons.push({
+      label: "画像挿入",
+
+      html:
+        `<img src="https://via.placeholder.com/600" alt="画像">`
+    });
+
+  }
+
+
+  /* ==================================================
+     装飾
+  ================================================== */
+
+  if (tab === "装飾") {
+
+    /* 文字色 */
+
+    panelContent.appendChild(
+      createColorTool("text")
+    );
+
+
+    /* 背景色 */
+
+    panelContent.appendChild(
+      createColorTool("background")
+    );
+
+
+    /* 既存の簡単な装飾 */
+
+    buttons.push({
+      label: "黄色マーカー",
+
+      wrap: [
+        `<span style="background-color:#fff3a3">`,
+        `</span>`
+      ]
+    });
+
+  }
+
+
+  /* ==================================================
+     デザイン
+  ================================================== */
+
+  if (tab === "デザイン") {
+
+    const designButtons = [
+
+      {
+        label: "縦3分割型",
+        html: templates.vertical3
+      },
+
+      {
+        label: "横3分割型",
+        html: templates.horizontal3
+      },
+
+      {
+        label: "画像＋テキスト",
+        html: templates.imageText
+      },
+
+      {
+        label: "カードリスト",
+        html: templates.cardList
+      }
+
+    ];
+
+
+    designButtons.forEach(
+      function (btn) {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.textContent =
+          btn.label;
+
+        button.addEventListener(
+          "click",
+          function () {
+
+            insertTag(
+              btn.html
+            );
+
+          }
+        );
+
+        panelContent.appendChild(
+          button
+        );
+
+      }
+    );
+
+    return;
+
+  }
+
+
+  /* ==================================================
+     ボタン生成
+  ================================================== */
+
+  buttons.forEach(
+    function (btn) {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+      button.textContent =
+        btn.label;
+
+
+      if (btn.html) {
+
+        button.addEventListener(
+          "click",
+          function () {
+
+            insertTag(
+              btn.html
+            );
+
+          }
+        );
+
+      }
+
+
+      if (btn.wrap) {
+
+        button.addEventListener(
+          "click",
+          function () {
+
+            wrapSelection(
+              btn.wrap[0],
+              btn.wrap[1]
+            );
+
+          }
+        );
+
+      }
+
+
+      if (btn.link) {
+
+        button.addEventListener(
+          "click",
+          insertLink
+        );
+
+      }
+
+
+      panelContent.appendChild(
+        button
+      );
+
+    }
+  );
+
 }
 
 
 /* ==================================================
-   リサイズ
+   HTML挿入
 ================================================== */
 
-@media (max-width: 1100px) {
+function insertTag(html) {
 
-  .sidebar {
-    width: 175px;
-    min-width: 175px;
+  const doc =
+    editor.getDoc();
+
+  const cursor =
+    doc.getCursor();
+
+  doc.replaceRange(
+    html,
+    cursor
+  );
+
+  editor.focus();
+
+}
+
+
+/* ==================================================
+   選択範囲を囲む
+================================================== */
+
+function wrapSelection(
+  before,
+  after
+) {
+
+  const doc =
+    editor.getDoc();
+
+  const selection =
+    doc.getSelection();
+
+
+  if (!selection) {
+
+    alert(
+      "文字を選択してから使用してください。"
+    );
+
+    return;
+
   }
 
-  .main-area {
-    grid-template-columns:
-      220px
-      8px
-      minmax(280px, 1fr)
-      8px
-      minmax(320px, 1fr);
-  }
+
+  doc.replaceSelection(
+    before +
+    selection +
+    after
+  );
+
+  editor.focus();
 
 }
 
-@media (max-width: 850px) {
 
-  .sidebar {
-    width: 70px;
-    min-width: 70px;
+/* ==================================================
+   リンク
+================================================== */
 
-    padding: 14px 8px;
+function insertLink() {
+
+  saveSelection();
+
+
+  const url =
+    prompt(
+      "リンク先URLを入力してください"
+    );
+
+
+  if (!url) {
+
+    editor.focus();
+
+    return;
+
   }
 
-  .logo-text,
-  .menu-label,
-  .side-menu > span:not(.menu-icon),
-  .sidebar-bottom {
-    display: none;
+
+  restoreSelection();
+
+
+  const doc =
+    editor.getDoc();
+
+  const selection =
+    doc.getSelection();
+
+
+  if (!selection) {
+
+    alert(
+      "リンクにしたい文字を選択してください。"
+    );
+
+    editor.focus();
+
+    return;
+
   }
 
-  .logo-area {
-    justify-content: center;
-    padding-bottom: 18px;
-  }
 
-  .side-menu {
-    justify-content: center;
-    padding: 9px;
-  }
+  doc.replaceSelection(
+    `<a href="${url}" target="_blank">` +
+    selection +
+    "</a>"
+  );
 
-  .main-area {
-    grid-template-columns: 190px 1fr;
-  }
 
-  .resize-divider {
-    display: none;
-  }
-
-  .preview-content {
-    display: none;
-  }
+  editor.focus();
 
 }
+
+
+/* ==================================================
+   3画面の幅をドラッグ変更
+================================================== */
+
+const resizeDividers =
+  document.querySelectorAll(
+    ".resize-divider"
+  );
+
+
+resizeDividers.forEach(
+  function (divider) {
+
+    divider.addEventListener(
+      "pointerdown",
+      function (event) {
+
+        startResize(
+          event,
+          divider
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* ==================================================
+   リサイズ開始
+================================================== */
+
+function startResize(
+  event,
+  divider
+) {
+
+  event.preventDefault();
+
+  const dividerType =
+    divider.dataset.divider;
+
+  const startX =
+    event.clientX;
+
+  const computed =
+    getComputedStyle(
+      mainArea
+    );
+
+  const columns =
+    computed.gridTemplateColumns
+      .split(" ")
+      .map(
+        function (value) {
+
+          return parseFloat(value);
+
+        }
+      );
+
+
+  let startPanelWidth =
+    columns[0];
+
+  let startEditorWidth =
+    columns[2];
+
+
+  document.body.classList.add(
+    "is-resizing"
+  );
+
+
+  divider.setPointerCapture(
+    event.pointerId
+  );
+
+
+  function onMove(moveEvent) {
+
+    const difference =
+      moveEvent.clientX -
+      startX;
+
+    const mainWidth =
+      mainArea.clientWidth;
+
+    const minimumPanel =
+      170;
+
+    const minimumEditor =
+      260;
+
+    const minimumPreview =
+      280;
+
+
+    if (
+      dividerType ===
+      "panel-editor"
+    ) {
+
+      let newPanelWidth =
+        startPanelWidth +
+        difference;
+
+
+      const maxPanel =
+        mainWidth -
+        minimumEditor -
+        minimumPreview -
+        16;
+
+
+      newPanelWidth =
+        Math.max(
+          minimumPanel,
+          Math.min(
+            newPanelWidth,
+            maxPanel
+          )
+        );
+
+
+      mainArea.style.gridTemplateColumns =
+        `${newPanelWidth}px 8px minmax(${minimumEditor}px, 1fr) 8px minmax(${minimumPreview}px, 1fr)`;
+
+    }
+
+
+    if (
+      dividerType ===
+      "editor-preview"
+    ) {
+
+      let newEditorWidth =
+        startEditorWidth +
+        difference;
+
+
+      const panelWidth =
+        parseFloat(
+          getComputedStyle(
+            mainArea
+          ).gridTemplateColumns
+            .split(" ")[0]
+        );
+
+
+      const maxEditor =
+        mainWidth -
+        panelWidth -
+        minimumPreview -
+        16;
+
+
+      newEditorWidth =
+        Math.max(
+          minimumEditor,
+          Math.min(
+            newEditorWidth,
+            maxEditor
+          )
+        );
+
+
+      mainArea.style.gridTemplateColumns =
+        `${panelWidth}px 8px ${newEditorWidth}px 8px minmax(${minimumPreview}px, 1fr)`;
+
+    }
+
+
+    updatePreviewScale();
+
+    setTimeout(
+      function () {
+
+        editor.refresh();
+
+      },
+      0
+    );
+
+  }
+
+
+  function stopResize() {
+
+    document.body.classList.remove(
+      "is-resizing"
+    );
+
+
+    try {
+
+      divider.releasePointerCapture(
+        event.pointerId
+      );
+
+    } catch (error) {}
+
+
+    divider.removeEventListener(
+      "pointermove",
+      onMove
+    );
+
+    divider.removeEventListener(
+      "pointerup",
+      stopResize
+    );
+
+    divider.removeEventListener(
+      "pointercancel",
+      stopResize
+    );
+
+
+    updatePreviewScale();
+
+    editor.refresh();
+
+  }
+
+
+  divider.addEventListener(
+    "pointermove",
+    onMove
+  );
+
+  divider.addEventListener(
+    "pointerup",
+    stopResize
+  );
+
+  divider.addEventListener(
+    "pointercancel",
+    stopResize
+  );
+
+}
+
+
+/* ==================================================
+   初期表示
+================================================== */
+
+switchMode("pc");
+
+loadPanel("テキスト");
+
+updatePreview();
+
+
+/* ==================================================
+   ウィンドウサイズ変更
+================================================== */
+
+window.addEventListener(
+  "resize",
+  function () {
+
+    updatePreviewScale();
+
+    editor.refresh();
+
+  }
+);
