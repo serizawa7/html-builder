@@ -1,106 +1,72 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>HTML Builder</title>
 
-  <!-- CSSを読み込む -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- CodeMirror -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
+  />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 
 <body>
 
+  <div id="editorPage">
 
-  <!-- =========================
-       上部ヘッダー
-  ========================== -->
-
-  <header class="top-header">
-
-    <div class="logo">
-      🌸 <span>HTML Builder</span>
-    </div>
-
-
-    <div class="header-menu">
-
-      <button>ファイル</button>
-
-      <button>編集</button>
-
-      <button>表示</button>
-
-    </div>
-
-
-    <div class="header-actions">
-
-      <button>↶</button>
-
-      <button>↷</button>
-
-      <button class="save-btn">
-        💾 保存
-      </button>
-
-    </div>
-
-  </header>
-
-
-
-  <!-- =========================
-       メインエリア
-  ========================== -->
-
-  <div class="main-container">
-
-
-    <!-- =====================
-         左サイドバー
-    ====================== -->
+    <!-- =========================
+         サイドバー
+    ========================= -->
 
     <aside class="sidebar">
+
+      <div class="logo-area">
+
+        <div class="logo-mark">
+          ✦
+        </div>
+
+        <div class="logo-text">
+
+          <strong>
+            HTML Builder
+          </strong>
+
+          <span>
+            Page Design Tool
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="menu-label">
+        ELEMENTS
+      </div>
 
 
       <button class="side-menu active">
 
-        <span class="icon">
-          🏠
-        </span>
-
-        <span>
-          ホーム
-        </span>
-
-      </button>
-
-
-
-      <button class="side-menu">
-
-        <span class="icon">
-          🧩
-        </span>
-
-        <span>
-          テンプレート
-        </span>
-
-      </button>
-
-
-
-      <button class="side-menu">
-
-        <span class="icon">
+        <span class="menu-icon">
           T
         </span>
 
@@ -111,11 +77,36 @@
       </button>
 
 
+      <button class="side-menu">
+
+        <span class="menu-icon">
+          ▦
+        </span>
+
+        <span>
+          レイアウト
+        </span>
+
+      </button>
+
 
       <button class="side-menu">
 
-        <span class="icon">
-          🖼️
+        <span class="menu-icon">
+          □
+        </span>
+
+        <span>
+          ボックス
+        </span>
+
+      </button>
+
+
+      <button class="side-menu">
+
+        <span class="menu-icon">
+          ▧
         </span>
 
         <span>
@@ -125,11 +116,10 @@
       </button>
 
 
-
       <button class="side-menu">
 
-        <span class="icon">
-          🎨
+        <span class="menu-icon">
+          ✦
         </span>
 
         <span>
@@ -139,326 +129,291 @@
       </button>
 
 
-
       <button class="side-menu">
 
-        <span class="icon">
-          🔗
+        <span class="menu-icon">
+          ♡
         </span>
 
         <span>
-          リンク
+          デザイン
         </span>
 
       </button>
 
 
-    </aside>
+      <div class="sidebar-bottom">
 
+        <div class="tip-card">
 
+          <span class="tip-icon">
+            💡
+          </span>
 
-    <!-- =====================
-         ツールパネル
-    ====================== -->
+          <div>
 
-    <aside class="tool-panel">
+            <strong>
+              Let's create!
+            </strong>
 
+            <p>
+              パーツを選んで<br>
+              ページを作ろう
+            </p>
 
-      <div class="panel-header">
+          </div>
 
-        <h2>
-          テキスト
-        </h2>
-
-        <button>
-          ×
-        </button>
-
-      </div>
-
-
-
-      <!-- テキスト -->
-
-      <div class="panel-section">
-
-        <h3>
-          テキストを追加
-        </h3>
-
-
-        <button class="add-text">
-
-          ＋ 見出しを追加
-
-        </button>
-
-
-        <button class="add-text">
-
-          ＋ 小見出しを追加
-
-        </button>
-
-
-        <button class="add-text">
-
-          ＋ 本文を追加
-
-        </button>
+        </div>
 
       </div>
-
-
-
-      <hr>
-
-
-
-      <!-- 装飾 -->
-
-      <div class="panel-section">
-
-        <h3>
-          装飾
-        </h3>
-
-
-        <button id="boldBtn">
-
-          🅱 太字
-
-        </button>
-
-
-        <button id="underlineBtn">
-
-          U 下線
-
-        </button>
-
-
-        <button id="linkBtn">
-
-          🔗 リンク
-
-        </button>
-
-      </div>
-
-
-
-      <hr>
-
-
-
-      <!-- おすすめパーツ -->
-
-      <div class="panel-section">
-
-        <h3>
-          おすすめパーツ
-        </h3>
-
-
-        <button>
-          📢 お知らせ
-        </button>
-
-
-        <button>
-          ⚠️ 注意
-        </button>
-
-
-        <button>
-          📝 メモ
-        </button>
-
-
-        <button>
-          ⭐ ポイント
-        </button>
-
-      </div>
-
 
     </aside>
 
 
+    <!-- =========================
+         メインエリア
+    ========================= -->
 
-    <!-- =====================
-         中央編集エリア
-    ====================== -->
-
-    <main class="workspace">
-
-
-      <!-- 編集ツールバー -->
-
-      <div class="workspace-toolbar">
+    <main class="main-area">
 
 
-        <button>
-          ↶
-        </button>
+      <!-- =========================
+           パーツパネル
+      ========================= -->
 
+      <section class="panel">
 
-        <button>
-          ↷
-        </button>
+        <div class="panel-header">
 
+          <div>
 
-        <span class="divider"></span>
+            <span class="panel-kicker">
+              ELEMENTS
+            </span>
 
+            <h2 id="panelTitle">
+              テキスト
+            </h2>
 
-        <button>
-          💻 PC
-        </button>
+          </div>
 
-
-        <button>
-          📱 スマホ
-        </button>
-
-
-      </div>
-
-
-
-      <!-- キャンバス -->
-
-      <div class="canvas-area">
-
-
-        <div class="page">
-
-
-          <textarea
-            id="editorText"
-            placeholder="ここに文章を入力してください">
-          </textarea>
-
+          <div class="panel-decoration">
+            ✦
+          </div>
 
         </div>
 
 
+        <p class="panel-description">
+          使いたいパーツを選んでください
+        </p>
+
+
+        <div id="panelContent"></div>
+
+      </section>
+
+
+      <!-- =========================
+           パネル・エディタ間
+      ========================= -->
+
+      <div
+        class="resize-divider"
+        data-divider="panel-editor"
+      >
+        <span></span>
       </div>
 
 
+      <!-- =========================
+           HTMLエディタ
+      ========================= -->
 
-      <!-- ページ操作 -->
+      <section class="editor">
 
-      <div class="page-control">
+        <div class="section-header">
 
+          <div>
 
-        <div class="page-number">
+            <span class="section-kicker">
+              HTML EDITOR
+            </span>
 
-          1
+            <h3>
+              コードを編集
+            </h3>
+
+          </div>
+
+          <span class="status-dot">
+            ● 編集中
+          </span>
 
         </div>
 
 
-        <button class="add-page">
+        <div class="editor-wrapper">
 
-          ＋
+          <textarea id="editorText"></textarea>
 
-        </button>
-
-
-      </div>
-
-
-    </main>
-
-
-
-    <!-- =====================
-         右側プレビュー
-    ====================== -->
-
-    <aside class="preview-panel">
-
-
-      <div class="preview-header">
-
-
-        <h2>
-          プレビュー
-        </h2>
+        </div>
 
 
         <button class="copy">
 
-          📋 HTMLをコピー
+          <span>
+            ⌘
+          </span>
+
+          HTMLをコピー
 
         </button>
 
+      </section>
 
+
+      <!-- =========================
+           エディタ・プレビュー間
+      ========================= -->
+
+      <div
+        class="resize-divider"
+        data-divider="editor-preview"
+      >
+        <span></span>
       </div>
 
 
+      <!-- =========================
+           プレビュー
+      ========================= -->
 
-      <!-- PC / スマホ切り替え -->
+      <section class="preview-content">
 
-      <div class="preview-tabs">
+        <div class="preview-header">
 
+          <div>
 
-        <button class="preview-tab active">
+            <span class="section-kicker">
+              LIVE PREVIEW
+            </span>
 
-          💻 PC
+            <h3>
+              プレビュー
+            </h3>
 
-        </button>
-
-
-        <button class="preview-tab">
-
-          📱 スマホ
-
-        </button>
-
-
-      </div>
+          </div>
 
 
+          <div class="preview-switch">
 
-      <!-- プレビュー -->
+            <button
+              id="previewPcBtn"
+              class="preview-mode-btn active"
+              type="button"
+            >
+              🖥 PC
+            </button>
 
-      <div class="preview-content">
+            <button
+              id="previewMobileBtn"
+              class="preview-mode-btn"
+              type="button"
+            >
+              📱 スマホ
+            </button>
 
-
-        <div class="pc-preview">
-
-          <div id="pcPreview"></div>
+          </div>
 
         </div>
 
 
+        <!-- PC -->
 
-        <div class="mobile-preview">
+        <div class="pc-stage">
 
-          <div id="mobilePreview"></div>
+          <div class="device-label">
+
+            <span>
+              PC PREVIEW
+            </span>
+
+            <span>
+              1280px
+            </span>
+
+          </div>
+
+
+          <div class="pc-device">
+
+            <div class="browser-bar">
+
+              <div class="browser-dots">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+              </div>
+
+              <div class="browser-address">
+                preview.html
+              </div>
+
+            </div>
+
+
+            <div
+              class="pc-preview"
+              id="pcPreview"
+            ></div>
+
+          </div>
 
         </div>
 
 
-      </div>
+        <!-- スマホ -->
+
+        <div class="mobile-stage">
+
+          <div class="device-label">
+
+            <span>
+              SMARTPHONE PREVIEW
+            </span>
+
+            <span>
+              375px
+            </span>
+
+          </div>
 
 
-    </aside>
+          <div class="mobile-device">
 
+            <div class="mobile-camera"></div>
+
+
+            <div
+              class="mobile-preview"
+              id="mobilePreview"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
 
   </div>
 
 
-
-  <!-- =========================
-       JavaScriptを読み込む
-  ========================== -->
-
   <script src="script.js"></script>
 
-
 </body>
-
 </html>
