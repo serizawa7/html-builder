@@ -33,7 +33,7 @@
   <div id="editorPage">
 
     <!-- =========================
-         サイドバー
+          サイドバー
     ========================= -->
 
     <aside class="sidebar">
@@ -80,19 +80,6 @@
       <button class="side-menu">
 
         <span class="menu-icon">
-          ▦
-        </span>
-
-        <span>
-          レイアウト
-        </span>
-
-      </button>
-
-
-      <button class="side-menu">
-
-        <span class="menu-icon">
           □
         </span>
 
@@ -123,7 +110,7 @@
         </span>
 
         <span>
-          装飾
+          カラー
         </span>
 
       </button>
@@ -171,14 +158,14 @@
 
 
     <!-- =========================
-         メインエリア
+          メインエリア
     ========================= -->
 
     <main class="main-area">
 
 
       <!-- =========================
-           パーツパネル
+            パーツパネル
       ========================= -->
 
       <section class="panel">
@@ -215,7 +202,7 @@
 
 
       <!-- =========================
-           パネル・エディタ間
+            パネル・エディタ間
       ========================= -->
 
       <div
@@ -227,7 +214,7 @@
 
 
       <!-- =========================
-           HTMLエディタ
+            HTMLエディタ
       ========================= -->
 
       <section class="editor">
@@ -274,7 +261,7 @@
 
 
       <!-- =========================
-           エディタ・プレビュー間
+            エディタ・プレビュー間
       ========================= -->
 
       <div
@@ -286,7 +273,7 @@
 
 
       <!-- =========================
-           プレビュー
+            プレビュー
       ========================= -->
 
       <section class="preview-content">
@@ -324,6 +311,15 @@
               📱 スマホ
             </button>
 
+            <!-- 👇 追加：全画面表示切り替えボタン -->
+            <button
+              id="fullscreenBtn"
+              class="preview-mode-btn"
+              type="button"
+            >
+              ⛶ 全画面
+            </button>
+
           </div>
 
         </div>
@@ -340,7 +336,7 @@
             </span>
 
             <span>
-              1280px
+              720px
             </span>
 
           </div>
@@ -386,7 +382,7 @@
             </span>
 
             <span>
-              375px
+              360px
             </span>
 
           </div>
@@ -413,7 +409,51 @@
   </div>
 
 
-  <script src="script.js"></script>
+  <!-- =========================
+       追加：操作マニュアルモーダル
+  ========================= -->
+  <div id="manualModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📖 使い方マニュアル</h2>
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div>
+            <h4>パーツを選ぶ</h4>
+            <p>左側のメニュー（テキスト・ボックス・画像・カラーなど）から追加したい要素を選択します。</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div>
+            <h4>コードを編集 & 装飾</h4>
+            <p>中央のエディタで直接HTMLを修正するか、プレビューの要素をクリックして色や文字を変更できます。</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div>
+            <h4>プレビューで確認</h4>
+            <p>「PC」「スマホ」切り替えや「全画面」表示で実際の見た目を確認し、最後にHTMLをコピーします。</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <label class="dont-show-again">
+          <input type="checkbox" id="noShowAgainCheck"> 次回から表示しない
+        </label>
+        <button id="modalOkBtn" class="modal-ok-btn">はじめる</button>
+      </div>
+    </div>
+  </div>
 
+
+  <script src="script.js"></script>
+  
+<!-- 隠しファイル入力（画像アップロード用） -->
+<input type="file" id="imageUploader" accept="image/*" style="display: none;">
 </body>
 </html>
