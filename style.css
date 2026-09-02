@@ -1398,3 +1398,104 @@ section.template {
   outline: 3px dashed #9f6ee7 !important; /* ホバー時に紫の点線枠 */
   opacity: 0.85;
 }
+/* ==================================================
+   HTMLコピー完了ポップアップ
+================================================== */
+
+.copy-toast {
+  position: fixed;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%) scale(0.9);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 220px;
+
+  padding: 24px 32px;
+
+  background: rgba(255, 255, 255, 0.97);
+
+  border: 1px solid #f3d5df;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 15px 40px rgba(180, 100, 125, 0.2);
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  z-index: 99999;
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    visibility 0.3s ease;
+}
+
+
+/* 表示状態 */
+
+.copy-toast.show {
+
+  opacity: 1;
+
+  visibility: visible;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+
+/* チェックマーク */
+
+.copy-toast-icon {
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 10px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f39ab1,
+      #e9819e
+    );
+
+  color: #fff;
+
+  font-size: 22px;
+  font-weight: 700;
+
+  box-shadow:
+    0 5px 12px rgba(225, 119, 147, 0.2);
+}
+
+
+/* 「コピーしました！」 */
+
+.copy-toast-text {
+
+  color: #654b55;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.3px;
+}
