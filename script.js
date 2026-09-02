@@ -458,14 +458,62 @@ document
 
       await navigator.clipboard.writeText(html);
 
-      alert("採用管理サイト用HTMLをコピーしました！");
+      // コピー成功ポップアップ
+      showCopyToast();
 
     } catch (error) {
 
       alert("HTMLのコピーに失敗しました。");
+
     }
   });
 
+
+/* ==================================================
+   コピー完了ポップアップ
+================================================== */
+
+function showCopyToast() {
+
+  // すでに表示されている場合は削除
+  const oldToast = document.querySelector(".copy-toast");
+
+  if (oldToast) {
+    oldToast.remove();
+  }
+
+  // ポップアップ作成
+  const toast = document.createElement("div");
+
+  toast.className = "copy-toast";
+
+  toast.innerHTML = `
+    <div class="copy-toast-icon">✓</div>
+    <div class="copy-toast-text">コピーしました！</div>
+  `;
+
+  document.body.appendChild(toast);
+
+  // 少し待ってから表示アニメーション
+  requestAnimationFrame(function () {
+    toast.classList.add("show");
+  });
+
+  // 2秒後に消す
+  setTimeout(function () {
+
+    toast.classList.remove("show");
+
+    setTimeout(function () {
+
+      if (toast.parentNode) {
+        toast.remove();
+      }
+
+    }, 300);
+
+  }, 2000);
+}
 
 /* ==================================================
    サイドバー
